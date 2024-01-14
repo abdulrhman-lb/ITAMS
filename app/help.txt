@@ -1,3 +1,11 @@
-git init
+//git init
 git add .
-git commit -m ""
+git commit -m "Creat Project"
+//git remote add origin https://github.com/abdulrhman-lb/ITAMS.git
+git push -u origin master
+
+
+excel
+
+composer require maatwebsite/excel:^3.1.48 -W
+php artisan vendor:publish --provider="Maatwebsite\Excel\ExcelServiceProvider"

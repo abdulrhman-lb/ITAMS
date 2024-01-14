@@ -6,9 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\employees;
 use App\Models\branches;
+use App\Models\dates;
 use App\Models\sub_branches;
 use App\Models\departments;
+use App\Models\devices;
 use App\Models\jop_titles;
+use Illuminate\Support\Facades\Date;
 
 class EmployeeController extends Controller
 {
@@ -106,6 +109,31 @@ class EmployeeController extends Controller
             'email' => ['required', 'email', 'unique:employees,email,' . $id],
             'jop_title_id' => ['required', 'min_digits:1'],
         ]);
+        $employee = employees::where('id', $id)->first();
+        if (!($employee -> branch_id == $request -> Input('branch_id'))) {
+            $devices = devices::where('employee_id', $employee -> id)->get();
+            foreach ($devices as $key => $device) {
+                //تعديل الفرع في جدول الأجهزة
+                $device -> update([
+                    'branch_id' => $request -> Input('branch_id')
+                ]);
+
+                //اغلاق الاستلام في جدول الاستلام والتسليم
+                dates::where('employee_id', $employee -> id)->where('device_id', $device->id)->where('end_date', Null)
+                    -> update([
+                        'end_date'=> now()
+                    ]);
+                
+                //فتح استلام جديد حسب الفرع الجديد
+                dates::create(['start_date'=> now(),
+                                'branch_id'=> $request ->Input('branch_id'),
+                                'sub_branch_id'=> $request -> Input('sub_branch_id'),
+                                'department_id'=> $request -> Input('department_id'),
+                                'employee_id'=> $employee -> id,
+                                'device_id'=> $device -> id,
+                                ]);
+            }
+        }
         employees::where('id', $id)
             ->update([
             'branch_id'=>$request -> Input('branch_id'),
@@ -118,6 +146,7 @@ class EmployeeController extends Controller
             'jop_title_id'=>$request -> Input('jop_title_id'),
             'ena'=>$request -> Input('ena'),
         ]);
+       
         return redirect('employee') -> with('message', 'تم التعديل على الموظف بنجاح');
     }
 

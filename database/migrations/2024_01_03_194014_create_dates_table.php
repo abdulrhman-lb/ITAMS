@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('employee_id');
             $table->unsignedBigInteger('device_id');
             $table->date('start_date');
-            $table->date('end_date');
+            $table->date('end_date')->nullable();
             $table->timestamps();
             $table->foreign('branch_id')->references('id')->on('branches');
             $table->foreign('sub_branch_id')->references('id')->on('sub_branches');

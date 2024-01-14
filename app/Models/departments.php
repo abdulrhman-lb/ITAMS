@@ -30,4 +30,8 @@ class departments extends Model
         return $this->hasMany(devices::class);
     }
 
+    public function dates() {
+        return $this->hasMany(dates::class);
+    }
+
 }

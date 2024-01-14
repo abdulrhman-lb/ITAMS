@@ -37,4 +37,8 @@ class branches extends Model
     public function device() {
         return $this->hasMany(devices::class);
     }
+
+    public function dates() {
+        return $this->hasMany(dates::class);
+    }
 }

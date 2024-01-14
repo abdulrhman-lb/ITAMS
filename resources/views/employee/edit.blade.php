@@ -18,6 +18,9 @@
                                         <option value="{{$branch -> id}}" {{ $branch -> id == $list['employees'] -> branch_id ? 'selected' : ''}}>{{$branch -> branch}}</option>
                                     @endforeach
                                 </select>
+                                <span style="color: brown" role="alert">
+                                    <strong>ملاحظة: عند تعديل الفرع لموظف محدد سيتم تعديل عائدة الأجهزة المستلمه من قبله إلى الفرع الجديد </strong>
+                                </span>
                                 @error('branch_id')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

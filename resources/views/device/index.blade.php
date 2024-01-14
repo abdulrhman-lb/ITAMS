@@ -185,6 +185,8 @@
                             <a href="/device/{{$device -> id}}"><button type="button" class="btn btn-primary my-1"><i class="fa fa-eye"></i></button></a>
                             <a href="/device/{{$device -> id}}/edit"><button type="button" class="btn btn-success my-1"><i class="fa fa-edit"></i></button></a>
                             <button type="submit" class="btn btn-danger my-1" onclick ="return confirm('هل تريد بالتأكيد حذف هذا الموظف ؟')"><i class="fa fa-trash"></i></button>  
+                            <span class="m-2">|</span>
+                            <a href="{{route('dates',['id='.$device -> id,'branch_id='.$device -> branch_id])}}"><button type="button" title="استلام وتسليم" class="btn btn-success my-1"><i class="fa fa-retweet"></i><span class="badge"></span></button></a>
                         </form>  
                         </td>
                     </tr>

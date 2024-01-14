@@ -17,7 +17,7 @@
                                     @foreach ($list['branches'] as $branch)
                                     <option value="{{$branch -> id}}" {{ $branch -> id == old('branch_id') ? 'selected' : ''}}>{{$branch -> branch}}</option>
                                     @endforeach
-                                </select>
+                                </select> 
                                 @error('branch_id')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

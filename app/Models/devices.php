@@ -69,4 +69,8 @@ class devices extends Model
         return $this->belongsTo(statuses::class);
     }
 
+    public function dates() {
+        return $this->hasMany(dates::class);
+    }
+
 }

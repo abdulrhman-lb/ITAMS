@@ -93,6 +93,21 @@
     height: 70px;
     object-fit: cover;
     border-radius: 50%;
+    border-width: 0.1em;
+    border-color: #cfcccc;
+    border-style: solid;
+  }
+
+  .img-pro-show-box {
+    display: inline-flex;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10%;
+    border-width: 0.1em;
+    border-color: #a5a2a2;
+    border-style: solid;
+
   }
 
   .search-container {
@@ -102,4 +117,5 @@
 .accordion-button::after {
   margin-left:  5px  !important;
 }
+
 

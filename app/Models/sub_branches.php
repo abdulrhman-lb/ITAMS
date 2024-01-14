@@ -29,4 +29,8 @@ class sub_branches extends Model
     public function employee() {
         return $this->hasMany(employees::class);
     }
+
+    public function dates() {
+        return $this->hasMany(dates::class);
+    }
 }

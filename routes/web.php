@@ -16,8 +16,8 @@ use App\Http\Controllers\subController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\const\jop_titleController;
 use App\Http\Controllers\const\StatusController;
+use App\Http\Controllers\DatesController;
 use App\Http\Controllers\UserController;
-
 
 Route::get('/', function () {
     return view('welcome');
@@ -28,7 +28,13 @@ Auth::routes();
 Route::resource('/employee', EmployeeController::class)->middleware('isrule');
 Route::resource('/device', DeviceController::class)->middleware('isrule');
 Route::resource('/user', UserController::class)->middleware('isadmin');
-Route::post('/divece', [DeviceController::class, 'index'])->name('device_search');
+Route::post('/divece', [DeviceController::class, 'index'])->middleware('isadmin')->name('device_search');
+Route::resource('/dates', DatesController::class);
+Route::post('/dates', [DatesController::class, 'index'])->name('dates');
+Route::post('/dates-add', [DatesController::class, 'index_add'])->name('dates-add');
+Route::get('/export-dates',[DatesController::class,'exportdates'])->name('export-dates');
+
+
 
 
 
