@@ -13,7 +13,7 @@
                 <th class="centered-content">#</th>
                 <th class="centered-content">اسم القسم باللغة العربية</th>
                 <th class="centered-content">اسم القسم باللغة الانكليزية</th>
-                <th class="centered-content" colspan="2"><a href="/const/department/create"><button type="button" class="btn btn-primary my-1">إضافة قسم جديد</button></a></th>
+                <th class="centered-content" colspan="2"><a href="/const/department/create"><button type="button" class="btn btn-dark my-1">إضافة جديدة  <i class="fa fa-plus-square"></i></button></a></th>	
             </tr>
             @php
                 $count = 0;
@@ -30,8 +30,8 @@
                         <form action="/const/department/{{$department -> id}}" method="POST">   
                             @csrf
                             @method("DELETE")
-                            <a href="/const/department/{{$department -> id}}/edit"><button type="button" class="btn btn-success my-1"><i class="fa fa-edit"></i></button></a>
-                            <button type="submit" class="btn btn-danger my-1" onclick ="return confirm('هل تريد بالتأكيد حذف هذا القسم ؟')"><i class="fa fa-trash"></i></button>  
+                            <a href="/const/department/{{$department -> id}}/edit"><button type="button" class="btn btn-secondary my-1"><i class="fa fa-edit"></i></button></a>
+                            <button type="submit" class="btn btn-secondary my-1" onclick ="return confirm('هل تريد بالتأكيد حذف هذا القسم ؟')"><i class="fa fa-trash"></i></button>  
                         </form>  
                     </td>
                 </tr>

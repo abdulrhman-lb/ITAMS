@@ -28,11 +28,16 @@ Auth::routes();
 Route::resource('/employee', EmployeeController::class)->middleware('isrule');
 Route::resource('/device', DeviceController::class)->middleware('isrule');
 Route::resource('/user', UserController::class)->middleware('isadmin');
-Route::post('/divece', [DeviceController::class, 'index'])->middleware('isadmin')->name('device_search');
+Route::post('/divece', [DeviceController::class, 'index'])->name('device_search');
+Route::post('/employee', [EmployeeController::class, 'index'])->name('employee_search');
 Route::resource('/dates', DatesController::class);
 Route::post('/dates', [DatesController::class, 'index'])->name('dates');
 Route::post('/dates-add', [DatesController::class, 'index_add'])->name('dates-add');
+Route::post('/dates-add-all', [DatesController::class, 'index_add_all'])->name('dates-add-all');
 Route::get('/export-dates',[DatesController::class,'exportdates'])->name('export-dates');
+Route::get('/device-employee',[DeviceController::class,'device_employee'])->name('device-employee');
+Route::get('/export-device-employee',[DeviceController::class,'export_device_employee'])->name('export-device-employee');
+
 
 
 

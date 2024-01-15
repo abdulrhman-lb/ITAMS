@@ -63,7 +63,7 @@
                                         $sub_branch = ' - ';
                                         $department = ' - ';
                                     } else {
-                                        $full_name = $device -> employee -> full_name;
+                                        $full_name = $devices -> employee -> full_name;
                                         $sub_branch = $devices -> employee -> sub_branch -> sub_branch;
                                         $department = $devices -> employee -> department -> department;
                                     }

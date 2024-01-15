@@ -66,6 +66,7 @@
                             <form action="{{route('dates-add')}}" method="POST">
                                 @csrf
                                 <input type="hidden" name="device_id" value="{{$list['devices'] -> id}}">
+                                <input type="hidden" name="back" value="{{$list['back']}}">
                                 <div class="row mb-3">
                                     <select class="form-select @error('employee_id') is-invalid @enderror" id="employee_id" name="employee_id">
                                         <option value="" selected>اختر الموظف الذي تريد نقل الجهاز له ...</option>
@@ -80,7 +81,7 @@
                                 @enderror
                                 </div>
                                 <div class="row mb-3">
-                                    <button type="submit" name="change" class="btn btn-primary">نقل الجهاز إلى الموظف المحدد     <i class="fa fa-braille"></i></button>
+                                    <button type="submit" name="change" class="btn btn-dark">نقل الجهاز إلى الموظف المحدد     <i class="fa fa-braille"></i></button>
                                 </div>
                             </form>
                         </div>
@@ -141,7 +142,7 @@
             <input type="hidden" name="hard_disk1" value="{{!is_null($list['devices'] -> hard_disk1) ? $list['devices'] -> hard_disk1 -> kind . ' ' . $list['devices'] -> hard_disk1 -> size . ' GB' : ' - '}}">
             <input type="hidden" name="hard_disk2" value="{{!is_null($list['devices'] -> hard_disk2) ? $list['devices'] -> hard_disk2 -> kind . ' ' . $list['devices'] -> hard_disk2 -> size . ' GB' : ' - '}}">
 
-            <button type="submit" class="btn btn-primary mt-3" style="width: 50%">تصدير إلى اكسل <i class="fa fa-file-excel-o"></i></button>
+            <button type="submit" class="btn btn-dark mt-3" style="width: 50%">تصدير إلى اكسل <i class="fa fa-file-excel-o"></i></button>
         </div>
     </form>
 </div>

@@ -12,9 +12,12 @@ use App\Models\hard_disks;
 use App\Models\classes;
 use App\Models\categories;
 use App\Models\departments;
+use App\Models\employees;
 use App\Models\models;
 use App\Models\statuses;
 use App\Models\sub_branches;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ExportDeviceEmployee;
 
 class DeviceController extends Controller
 {
@@ -60,7 +63,7 @@ class DeviceController extends Controller
                 'devices' => $devices->get(),
                 'search_branch' => $request->branch_id,
                 'search_sub_branch' => $request->sub_branch_id,
-                'search_department' => $request->s_d,
+                'search_department' => $request->department_id,
                 'search_class' => $request->class_id,
                 'search_category' => $request->category_id,
                 'search_model' => $request->model_id,
@@ -70,7 +73,6 @@ class DeviceController extends Controller
 
         return view('device.index')->with('list' , $par);
     }
-
 
     public function create()
     {
@@ -222,5 +224,20 @@ class DeviceController extends Controller
         //
     }
 
+    public function device_employee(Request $request)
+    { 
+        $employee = employees::query(); 
+        if (Auth::user()->role == '0') {$employee->where('branch_id', $request->branch_id);}
+        $par = ['devices' => devices::where('employee_id',$request -> id)->get(),
+                'employees' => employees::where('id',$request -> id)->first(),
+                'employees_list' => $employee -> get(),
+                ];
+        return view('device.device')->with('list' , $par);
+    }
+
+    public function export_device_employee(Request $request){
+        
+        return Excel::download(new ExportDeviceEmployee, $request -> full_name .'.xlsx');
+    }
 
 }

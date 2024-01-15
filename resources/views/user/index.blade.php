@@ -31,7 +31,7 @@
                     <td class="centered-content {{$user -> active == '0' ? 'text-danger' : ''}}">{{$user -> active == '1' ? 'فعال' : 'غير فعال'}}</td>
                     <td class="centered-content {{$user -> active == '0' ? 'text-danger' : ''}}">{{($user -> role == '1' ? 'مدير نظام' : 'مستخدم عادي : فرع ' . (is_null($user -> branch_id) ? 'غير مخصص' : $user -> branch -> branch))}}</td>
                     <td class="centered-content">
-                        <a href="/user/{{$user -> id}}/edit"><button type="button" class="btn btn-success my-1"><i class="fa fa-edit"></i></button></a>
+                        <a href="/user/{{$user -> id}}/edit"><button type="button" class="btn btn-secondary my-1"><i class="fa fa-edit"></i></button></a>
                     </td>
                 </tr>
             @endforeach

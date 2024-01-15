@@ -13,7 +13,7 @@
                 <th class="centered-content">#</th>
                 <th class="centered-content">نوع القرص الصلب</th>
                 <th class="centered-content">حجم القرص الصلب بالـ GB</th>
-                <th class="centered-content" colspan="2"><a href="/const/hd/create"><button type="button" class="btn btn-primary my-1">إضافة قرص صلب جديد</button></a></th>
+                <th class="centered-content" colspan="2"><a href="/const/hd/create"><button type="button" class="btn btn-dark my-1">إضافة جديدة  <i class="fa fa-plus-square"></i></button></a></th>	
             </tr>
             @php
                 $count = 0;
@@ -30,8 +30,8 @@
                         <form action="/const/hd/{{$hard_disk -> id}}" method="POST">   
                             @csrf
                             @method("DELETE")
-                            <a href="/const/hd/{{$hard_disk -> id}}/edit"><button type="button" class="btn btn-success my-1"><i class="fa fa-edit"></i></button></a>
-                            <button type="submit" class="btn btn-danger my-1" onclick ="return confirm('هل تريد بالتأكيد حذف هذا القرص الصلب ؟')"><i class="fa fa-trash"></i></button>  
+                            <a href="/const/hd/{{$hard_disk -> id}}/edit"><button type="button" class="btn btn-secondary my-1"><i class="fa fa-edit"></i></button></a>
+                            <button type="submit" class="btn btn-secondary my-1" onclick ="return confirm('هل تريد بالتأكيد حذف هذا القرص الصلب ؟')"><i class="fa fa-trash"></i></button>  
                         </form>  
                     </td>
                 </tr>

@@ -8,15 +8,14 @@
 @endif
 <div class="container" >
     <div class="row justify-content-center mb-3">
-
         <form action="{{ route('device_search')}}" method="post">   
             @csrf
             <div class="accordion" id="accordionPanelsStayOpenExample">
                 <div class="accordion-item">
                 <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                        <div class="fw-bold text-center">قائمة الأجهزة {{' - ' . (Auth::user()->role == '1'  ? 'كل الفروع' : 'فرع ' . Auth::user()->branch->branch)}}</div>
-                    </button>
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                    <div class="fw-bold text-center">قائمة الأجهزة {{' - ' . (Auth::user()->role == '1'  ? 'كل الفروع' : 'فرع ' . Auth::user()->branch->branch)}}</div>
+                </button>
                 </h2>
                 <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse">
                     <div class="accordion-body">
@@ -122,8 +121,8 @@
 
                                             <div class="row mb-3">
                                                 <div class="col-md-12 offset-md-1">
-                                                    <button type="submit" name="search" id="search" class="btn btn-primary" >تصفية</button>
-                                                    <button type="submit" name="clear" id="cancel" class="btn btn-primary" >مسح</button>
+                                                    <button type="submit" name="search" id="search" class="btn btn-dark" >تصفية</button>
+                                                    <button type="submit" name="clear" id="cancel" class="btn btn-dark" >مسح</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -135,64 +134,62 @@
                 </div>
             </div>
         </form>
-
-        <div class="row justify-content-center mb-3 mt-3">
-            <table class="table table-bordered ">
-                <tr>
-                    <th class="centered-content">#</th>
-                    <th class="centered-content">صورة</th>
-                    <th class="centered-content">الصنف</th>
-                    <th class="centered-content">الموديل</th>
-                    <th class="centered-content">S/N</th>
-                    <th class="centered-content">اسم المستلم</th>
-                    <th class="centered-content" colspan="2"><a href="device/create"><button type="button" class="btn btn-primary my-1">إضافة</button></a></th>
+    </div>
+    <div class="row justify-content-center mb-3 mt-3">
+        <table class="table table-bordered ">
+            <tr>
+                <th class="centered-content">#</th>
+                <th class="centered-content">صورة</th>
+                <th class="centered-content">الصنف</th>
+                <th class="centered-content">الموديل</th>
+                <th class="centered-content">S/N</th>
+                <th class="centered-content">اسم المستلم</th>
+                <th class="centered-content" colspan="2"><a href="device/create"><button type="button" class="btn btn-dark my-1">إضافة جديدة  <i class="fa fa-plus-square"></i></button></a></th>
+            </tr>
+            @php
+                $count = 0;
+            @endphp
+            @foreach ($list['devices'] as $device)        
+                <tr class="pt-3 ">
+                    @php
+                        $count++;
+                        $image = '';
+                        if (($device -> model -> image) == '' ) {
+                            $image = 'model/non.png';
+                        } else {
+                            $image = 'model/' . $device -> model -> image; 
+                        }
+                    @endphp 
+                    <td class="fw-bold centered-content">{{$count}}</td>
+                    <td class="centered-content" id="image">
+                        <a href="/images/{{$image}}" data-lightbox="post-image" data-title="{{$device -> model -> model}}">
+                            <img src="/images/{{$image}}" alt="{{$device -> model -> model}}" class="thumbnail img-pro-show"">
+                        </a>
+                    </td>
+                    <td class="centered-content" id="category">{{$device -> category -> category}}</td>
+                    <td class="centered-content" id="model">{{$device -> model -> model}}</td>
+                    <td class="centered-content" id="serial_number">{{$device -> serial_number}}</td>
+                    @php
+                        if (is_null($device -> employee)) {
+                            $full_name = ' - ';
+                        } else {
+                            $full_name = $device -> employee -> full_name;
+                        }
+                    @endphp
+                    <td class="centered-content" id="full_name">{{$full_name}}</td>
+                    <td class="centered-content">
+                    <form action="/device/{{$device -> id}}" method="POST">   
+                        @csrf
+                        @method("DELETE")
+                        <a href="/device/{{$device -> id}}"><button type="button" class="btn btn-secondary my-1"><i class="fa fa-eye"></i></button></a>
+                        <a href="/device/{{$device -> id}}/edit"><button type="button" class="btn btn-secondary my-1"><i class="fa fa-edit"></i></button></a>
+                        <button type="submit" class="btn btn-secondary my-1" onclick ="return confirm('هل تريد بالتأكيد حذف هذا الموظف ؟')"><i class="fa fa-trash"></i></button>  
+                        <a href="{{route('dates',['id='.$device -> id,'branch_id='.$device -> branch_id,'back=0'])}}"><button type="button" title="استلام وتسليم" class="btn btn-secondary my-1"><i class="fa fa-retweet"></i><span class="badge"></span></button></a>
+                    </form>  
+                    </td>
                 </tr>
-                @php
-                    $count = 0;
-                @endphp
-                @foreach ($list['devices'] as $device)        
-                    <tr class="pt-3 ">
-                        @php
-                            $count++;
-                            $image = '';
-                            if (($device -> model -> image) == '' ) {
-                                $image = 'model/non.png';
-                            } else {
-                                $image = 'model/' . $device -> model -> image; 
-                            }
-                        @endphp 
-                        <td class="fw-bold centered-content">{{$count}}</td>
-                        <td class="centered-content" id="image">
-                            <a href="/images/{{$image}}" data-lightbox="post-image" data-title="{{$device -> model -> model}}">
-                                <img src="/images/{{$image}}" alt="{{$device -> model -> model}}" class="thumbnail img-pro-show"">
-                            </a>
-                        </td>
-                        <td class="centered-content" id="category">{{$device -> category -> category}}</td>
-                        <td class="centered-content" id="model">{{$device -> model -> model}}</td>
-                        <td class="centered-content" id="serial_number">{{$device -> serial_number}}</td>
-                        @php
-                            if (is_null($device -> employee)) {
-                                $full_name = ' - ';
-                            } else {
-                                $full_name = $device -> employee -> full_name;
-                            }
-                        @endphp
-                        <td class="centered-content" id="full_name">{{$full_name}}</td>
-                        <td class="centered-content">
-                        <form action="/device/{{$device -> id}}" method="POST">   
-                            @csrf
-                            @method("DELETE")
-                            <a href="/device/{{$device -> id}}"><button type="button" class="btn btn-primary my-1"><i class="fa fa-eye"></i></button></a>
-                            <a href="/device/{{$device -> id}}/edit"><button type="button" class="btn btn-success my-1"><i class="fa fa-edit"></i></button></a>
-                            <button type="submit" class="btn btn-danger my-1" onclick ="return confirm('هل تريد بالتأكيد حذف هذا الموظف ؟')"><i class="fa fa-trash"></i></button>  
-                            <span class="m-2">|</span>
-                            <a href="{{route('dates',['id='.$device -> id,'branch_id='.$device -> branch_id])}}"><button type="button" title="استلام وتسليم" class="btn btn-success my-1"><i class="fa fa-retweet"></i><span class="badge"></span></button></a>
-                        </form>  
-                        </td>
-                    </tr>
-                @endforeach
-            </table>
-        </div>
+            @endforeach
+        </table>
     </div>
 </div>
 @endsection

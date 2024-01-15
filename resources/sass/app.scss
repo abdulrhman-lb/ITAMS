@@ -118,4 +118,25 @@
   margin-left:  5px  !important;
 }
 
+.notification {
+  // background-color: #555;
+  // color: white;
+  // text-decoration: none;
+  // padding: 15px 26px;
+  position: relative;
+  // display: inline-block;
+  // border-radius: 2px;
+}
+
+
+.notification .badge {
+  position: absolute;
+  top: -12px;
+  right: -5px;
+  padding: 5px 8px;
+  border-radius: 50%;
+  background: #eb5e28;
+  color: white;
+}
+
 

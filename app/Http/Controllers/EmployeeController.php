@@ -11,16 +11,86 @@ use App\Models\sub_branches;
 use App\Models\departments;
 use App\Models\devices;
 use App\Models\jop_titles;
+use GuzzleHttp\Psr7\Query;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\DB;
 
 class EmployeeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->has('clear')) {
+            // إعادة تعيين القيم إلى الحالة الافتراضية
+            $request->replace([
+                'branch_id' => null,
+                'sub_branch_id' => null,
+                'department_id' => null,
+                'full_name' => null,
+                ]);
+            }
         if (Auth::user()->role == '1') {
-            return view('employee.index')->with('employees', employees::orderBy('branch_id' , 'ASC')->orderBy('ena' , 'desc')->get(),);
+            $query = employees::select('employees.*', DB::raw('COUNT(DISTINCT devices.id) as devices_count'),)
+                        ->leftJoin('devices', 'devices.employee_id', '=', 'employees.id')
+                        ->groupBy('employees.id')
+                        ->groupBy('employees.email')
+                        ->groupBy('employees.phone')
+                        ->groupBy('employees.mobile')
+                        ->groupBy('employees.ena')
+                        ->groupBy('employees.branch_id')
+                        ->groupBy('employees.sub_branch_id')
+                        ->groupBy('employees.department_id')
+                        ->groupBy('employees.jop_title_id')
+                        ->groupBy('employees.created_at')
+                        ->groupBy('employees.updated_at')
+                        ->groupBy('employees.full_name')
+                        ->orderBy('branch_id' , 'ASC')
+                        ->orderBy('ena' , 'desc');
+            if ($request->input('branch_id')) {$query->where('employees.branch_id', $request->input('branch_id'));}
+            if ($request->input('sub_branch_id')) {$query->where('employees.sub_branch_id', $request->input('sub_branch_id'));}
+            if ($request->input('department_id')) {$query->where('employees.department_id', $request->input('department_id'));}
+            if ($request->input('full_name')) {$query->where('employees.full_name', 'like' , '%'.$request->input('full_name').'%');}
+            $par = ['branches' => branches::orderBy('branch' , 'ASC')->get(),
+                    'sub_branches' => sub_branches::where('branch_id', $request->sub_branch_id)->orderBy('sub_branch' , 'ASC')->get(),
+                    'departments' => departments::orderBy('department' , 'ASC')->get(),
+                    'search_branch' => $request->branch_id,
+                    'search_sub_branch' => $request->sub_branch_id,
+                    'search_department' => $request->department_id,
+                    'search_full_name' => $request->full_name,
+                    'employees' => $query -> get()
+                    ];
+            return view('employee.index')->with('list', $par);
         } else {
-            return view('employee.index')->with('employees', employees::where('branch_id',Auth::user()->branch_id)->orderBy('ena' , 'desc')->get());
+            $query = employees::select('employees.*', DB::raw('COUNT(DISTINCT devices.id) as devices_count'),)
+                    ->leftJoin('devices', 'devices.employee_id', '=', 'employees.id')
+                    ->groupBy('employees.id')
+                    ->groupBy('employees.email')
+                    ->groupBy('employees.phone')
+                    ->groupBy('employees.mobile')
+                    ->groupBy('employees.ena')
+                    ->groupBy('employees.branch_id')
+                    ->groupBy('employees.sub_branch_id')
+                    ->groupBy('employees.department_id')
+                    ->groupBy('employees.jop_title_id')
+                    ->groupBy('employees.created_at')
+                    ->groupBy('employees.updated_at')
+                    ->groupBy('employees.full_name')
+                    ->where('employees.branch_id',Auth::user()->branch_id)
+                    ->orderBy('branch_id' , 'ASC')
+                    ->orderBy('ena' , 'desc');
+            if ($request->input('branch_id')) {$query->where('employees.branch_id', $request->input('branch_id'));}
+            if ($request->input('sub_branch_id')) {$query->where('employees.sub_branch_id', $request->input('sub_branch_id'));}
+            if ($request->input('department_id')) {$query->where('employees.department_id', $request->input('department_id'));}
+            if ($request->input('full_name')) {$query->where('employees.full_name', 'like' , '%'.$request->input('full_name').'%');}
+            $par = ['branches' => branches::where('id', Auth::user()->branch_id)->orderBy('branch' , 'ASC')->get(),
+                    'sub_branches' => sub_branches::where('branch_id', $request->sub_branch_id)->orderBy('sub_branch' , 'ASC')->get(),
+                    'departments' => departments::orderBy('department' , 'ASC')->get(),
+                    'search_branch' => $request->branch_id,
+                    'search_sub_branch' => $request->sub_branch_id,
+                    'search_department' => $request->department_id,
+                    'search_full_name' => $request->full_name,
+                    'employees' => $query -> get()
+                    ];
+            return view('employee.index')->with('list', $par);
         }
     }
 
