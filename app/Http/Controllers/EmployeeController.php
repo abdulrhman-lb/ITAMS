@@ -222,8 +222,18 @@ class EmployeeController extends Controller
 
     public function destroy(string $id)
     {
-        $po = employees::find($id);
-        $po -> delete();
-        return redirect('employee') -> with('message', 'تم حذف الموظف بنجاح');
+        $employees = employees::findOrFail($id);
+        if (!$employees->canDelete()) {
+            return redirect('employee') -> with('message', 'لا يمكن حذف الموظف لوجود أجهزة على عهدته');
+        } else {
+            $dates = dates::where('employee_id', $id)->get();
+            if ($dates->isEmpty()) {
+                $employees -> delete();
+                return redirect('employee') -> with('message', 'تم حذف الموظف بنجاح');
+            } else {
+                return redirect('employee') -> with('message', 'لا يمكن حذف الموظف لوجود حركات استلام وتسليم له');
+            }
+        }
     }
 }
+

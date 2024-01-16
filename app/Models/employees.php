@@ -10,6 +10,18 @@ class employees extends Model
     use HasFactory;
     protected $fillable = ['branch_id','sub_branch_id','department_id','full_name','jop_title_id','phone','mobile','email','ena'];
 
+        // تعريف العلاقة مع الجدول الفرعي (comments)
+        public function comments()
+        {
+            return $this->hasMany(devices::class,'employee_id');
+        }
+    
+        // دالة للتحقق من إمكانية حذف السجل
+        public function canDelete()
+        {
+            return !$this->comments()->exists();
+        }
+
     public function branch() { 
         return $this->belongsTo(branches::class);
     }

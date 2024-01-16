@@ -18,6 +18,7 @@ use App\Models\statuses;
 use App\Models\sub_branches;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ExportDeviceEmployee;
+use App\Models\dates;
 
 class DeviceController extends Controller
 {
@@ -221,7 +222,14 @@ class DeviceController extends Controller
 
     public function destroy(string $id)
     {
-        //
+        $dates = dates::where('device_id', $id)->get();
+        if ($dates->isEmpty()) {
+            $devices = devices::find($id);
+            $devices -> delete();
+            return redirect('device') -> with('message', 'تم حذف الجهاز بنجاح');
+        } else {
+            return redirect('device') -> with('message', 'لا يمكن حذف الجهاز لوجود حركات استلام وتسليم له');
+        }
     }
 
     public function device_employee(Request $request)
