@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
+use App\Models\itamsUser;
 use App\Models\branches;
+use App\Models\itams_branches;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     public function index()
     {
-        return view('user.index')->with('User', User::orderBy('active' , 'desc')->orderBy('role' , 'desc')->orderBy('branch_id' , 'asc')->get());
+        return view('user.index')->with('User', itamsUser::orderBy('active' , 'desc')->orderBy('role' , 'desc')->orderBy('branch_id' , 'asc')->get());
     }
 
     public function create()
@@ -28,21 +29,21 @@ class UserController extends Controller
 
     public function edit(string $id)
     {
-        $par = ['branches' => branches::orderBy('branch' , 'ASC')->get(),
-                'User' =>  User::where('id', $id)->first(),
+        $par = ['branches' => itams_branches::orderBy('branch' , 'ASC')->get(),
+                'User' =>  itamsUser::where('id', $id)->first(),
                 ];
         return view('user.edit')->with('list', $par);
     }
 
     public function update(Request $request, string $id)
     {
-        $test = User::where('id', $id)->get();
+        $test = itamsUser::where('id', $id)->get();
         if (is_null($request -> input('password'))) {
             $request -> validate([
                 'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $id],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:itams_users,email,' . $id],
             ]);
-            User::where('id', $id)
+            itamsUser::where('id', $id)
             ->update([
                 'name'=>$request -> Input('name'),
                 'email'=>$request -> Input('email'),
@@ -54,10 +55,10 @@ class UserController extends Controller
         else {
             $request -> validate([
                 'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $id],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:itams_users,email,' . $id],
                 'passwordd' => ['string', 'min:8'],
             ]);
-            User::where('id', $id)
+            itamsUser::where('id', $id)
             ->update([
                 'name'=>$request -> Input('name'),
                 'email'=>$request -> Input('email'),

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employees', function (Blueprint $table) {
+        Schema::create('itams_employees', function (Blueprint $table) {
             $table->id();
             $table->string('full_name');
             $table->string('email');
@@ -23,10 +23,10 @@ return new class extends Migration
             $table->unsignedBigInteger('department_id');
             $table->unsignedBigInteger('jop_title_id');
             $table->timestamps();
-            $table->foreign('branch_id')->references('id')->on('branches');
-            $table->foreign('sub_branch_id')->references('id')->on('sub_branches');
-            $table->foreign('department_id')->references('id')->on('departments');
-            $table->foreign('jop_title_id')->references('id')->on('jop_titles');
+            $table->foreign('branch_id')->references('id')->on('itams_branches');
+            $table->foreign('sub_branch_id')->references('id')->on('itams_sub_branches');
+            $table->foreign('department_id')->references('id')->on('itams_departments');
+            $table->foreign('jop_title_id')->references('id')->on('itams_jop_titles');
         });
     }
 
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employees');
+        Schema::dropIfExists('itams_employees');
     }
 };

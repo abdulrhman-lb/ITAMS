@@ -4,21 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\devices;
-use App\Models\branches;
-use App\Models\processors;
-use App\Models\memories;
-use App\Models\hard_disks;
-use App\Models\classes;
-use App\Models\categories;
-use App\Models\departments;
-use App\Models\employees;
-use App\Models\models;
-use App\Models\statuses;
-use App\Models\sub_branches;
+use App\Models\itams_devices;
+use App\Models\itams_branches;
+use App\Models\itams_processors;
+use App\Models\itams_memories;
+use App\Models\itams_hard_disks;
+use App\Models\itams_classes;
+use App\Models\itams_categories;
+use App\Models\itams_departments;
+use App\Models\itams_employees;
+use App\Models\itams_models;
+use App\Models\itams_statuses;
+use App\Models\itams_sub_branches;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ExportDeviceEmployee;
-use App\Models\dates;
+use App\Models\itams_dates;
 
 class DeviceController extends Controller
 {
@@ -37,7 +37,7 @@ class DeviceController extends Controller
                 'serial_number' => null,
             ]);
         }
-        $devices = devices::query(); 
+        $devices = itams_devices::query(); 
         if ($request->input('branch_id')) {$devices->where('branch_id', $request->input('branch_id'));}
         // if ($request->input('s_s')) {$devices->where('sub_branch_id', $request->input('s_s'));}
         // if ($request->input('s_d')) {$devices->where('department_id', $request->input('s_d'));}
@@ -48,19 +48,19 @@ class DeviceController extends Controller
         if ($request->input('serial')) {$devices->where('serial_number', 'like' , '%'.$request->input('serial').'%');}
 
         if (Auth::user()->role == '1') {
-            $branches = branches::orderBy('branch' , 'ASC');
+            $branches = itams_branches::orderBy('branch' , 'ASC');
         } else {
-            $branches = branches::where('id',Auth::user()->branch_id)->orderBy('branch' , 'ASC');
+            $branches = itams_branches::where('id',Auth::user()->branch_id)->orderBy('branch' , 'ASC');
             $devices->where('branch_id', Auth::user()->branch_id);
         }
 
         $par = ['branches' => $branches->get(),
-                'sub_branches' => sub_branches::where('branch_id', $request->sub_branch_id)->orderBy('sub_branch' , 'ASC')->get(),
-                'departments' => departments::orderBy('department' , 'ASC')->get(),
-                'classes' => classes::orderBy('class' , 'ASC')->get(),
-                'categories' => categories::where('class_id', $request->class_id)->orderBy('category' , 'ASC')->get(),
-                'models' => models::where('category_id', $request->category_id)->orderBy('model' , 'ASC')->get(),
-                'statuses' => statuses::orderBy('status' , 'ASC')->get(),
+                'sub_branches' => itams_sub_branches::where('branch_id', $request->sub_branch_id)->orderBy('sub_branch' , 'ASC')->get(),
+                'departments' => itams_departments::orderBy('department' , 'ASC')->get(),
+                'classes' => itams_classes::orderBy('class' , 'ASC')->get(),
+                'categories' => itams_categories::where('class_id', $request->class_id)->orderBy('category' , 'ASC')->get(),
+                'models' => itams_models::where('category_id', $request->category_id)->orderBy('model' , 'ASC')->get(),
+                'statuses' => itams_statuses::orderBy('status' , 'ASC')->get(),
                 'devices' => $devices->get(),
                 'search_branch' => $request->branch_id,
                 'search_sub_branch' => $request->sub_branch_id,
@@ -78,30 +78,28 @@ class DeviceController extends Controller
     public function create()
     {
         if (Auth::user()->role == '1') {
-            $par = ['branches' => branches::orderBy('branch' , 'ASC')->get(),
-                    'processors' => processors::orderBy('processor' , 'ASC')->get(),
-                    'memories' => memories::orderBy('kind' , 'ASC')->get(),
-                    'hard_disks' => hard_disks::orderBy('kind' , 'ASC')->get(),
-                    'classes' => classes::orderBy('class' , 'ASC')->get(),
-                    'categories' => categories::orderBy('category' , 'ASC')->get(),
-                    'models' => models::orderBy('model' , 'ASC')->get(),
-                    'statuses' => statuses::orderBy('status' , 'ASC')->get(),
-                    'processors' => processors::orderBy('processor' , 'ASC')->get(),
-                    'memories' => memories::orderBy('kind' , 'ASC')->orderBy('size' , 'ASC')->get(),
-                    'hard_disks' => hard_disks::orderBy('kind' , 'ASC')->orderBy('size' , 'ASC')->get(),
+            $par = ['branches' => itams_branches::orderBy('branch' , 'ASC')->get(),
+                    'processors' => itams_processors::orderBy('processor' , 'ASC')->get(),
+                    'memories' => itams_memories::orderBy('kind' , 'ASC')->get(),
+                    'classes' => itams_classes::orderBy('class' , 'ASC')->get(),
+                    'categories' => itams_categories::orderBy('category' , 'ASC')->get(),
+                    'models' => itams_models::orderBy('model' , 'ASC')->get(),
+                    'statuses' => itams_statuses::orderBy('status' , 'ASC')->get(),
+                    'processors' => itams_processors::orderBy('processor' , 'ASC')->get(),
+                    'memories' => itams_memories::orderBy('kind' , 'ASC')->orderBy('size' , 'ASC')->get(),
+                    'hard_disks' => itams_hard_disks::orderBy('kind' , 'ASC')->orderBy('size' , 'ASC')->get(),
                     ];
         } else {
-            $par = ['branches' => branches::where('id',Auth::user()->branch_id)->get(),
-                    'processors' => processors::orderBy('processor' , 'ASC')->get(),
-                    'memories' => memories::orderBy('kind' , 'ASC')->get(),
-                    'hard_disks' => hard_disks::orderBy('kind' , 'ASC')->get(),
-                    'classes' => classes::orderBy('class' , 'ASC')->get(),
-                    'categories' => categories::orderBy('category' , 'ASC')->get(),
-                    'models' => models::orderBy('model' , 'ASC')->get(),
-                    'statuses' => statuses::orderBy('status' , 'ASC')->get(),
-                    'processors' => processors::orderBy('processor' , 'ASC')->get(),
-                    'memories' => memories::orderBy('kind' , 'ASC')->orderBy('size' , 'ASC')->get(),
-                    'hard_disks' => hard_disks::orderBy('kind' , 'ASC')->orderBy('size' , 'ASC')->get(),
+            $par = ['branches' => itams_branches::where('id',Auth::user()->branch_id)->get(),
+                    'processors' => itams_processors::orderBy('processor' , 'ASC')->get(),
+                    'memories' => itams_memories::orderBy('kind' , 'ASC')->get(),
+                    'classes' => itams_classes::orderBy('class' , 'ASC')->get(),
+                    'categories' => itams_categories::orderBy('category' , 'ASC')->get(),
+                    'models' => itams_models::orderBy('model' , 'ASC')->get(),
+                    'statuses' => itams_statuses::orderBy('status' , 'ASC')->get(),
+                    'processors' => itams_processors::orderBy('processor' , 'ASC')->get(),
+                    'memories' => itams_memories::orderBy('kind' , 'ASC')->orderBy('size' , 'ASC')->get(),
+                    'hard_disks' => itams_hard_disks::orderBy('kind' , 'ASC')->orderBy('size' , 'ASC')->get(),
                     ];
         }
         return view('device.create')->with('list' , $par);
@@ -114,10 +112,10 @@ class DeviceController extends Controller
             'class_id' => ['required', 'min_digits:1'],
             'category_id' => ['required', 'min_digits:1'],
             'model_id' => ['required', 'min_digits:1'],
-            'serial_number' => ['required', 'unique:devices'],
+            'serial_number' => ['required', 'unique:itams_devices'],
             'status_id' => ['required', 'min_digits:1'],
         ]);
-        devices::create([
+        itams_devices::create([
             'branch_id'=>$request -> Input('branch_id'),
             'class_id'=>$request -> Input('class_id'),
             'category_id'=>$request -> Input('category_id'),
@@ -136,15 +134,15 @@ class DeviceController extends Controller
 
     public function show(string $id)
     {
-        $test = devices::where('id', $id)->first();
+        $test = itams_devices::where('id', $id)->first();
         if (is_null($test)) {
             return redirect('device') -> with('message', 'الصفحة التي قمت بطلبها غير موجودة');
         }
         if (Auth::user()->role == '1') {
-            return view('device.show')->with('devices', devices::where('id', $id)->first());
+            return view('device.show')->with('devices', itams_devices::where('id', $id)->first());
         } else {
             if ($test->branch_id == Auth::user()->branch_id) {
-                return view('device.show')->with('devices', devices::where('id', $id)->first());
+                return view('device.show')->with('devices', itams_devices::where('id', $id)->first());
             } else {
                 return redirect('device') -> with('message', 'هذه الصفحة لجهاز من فرع آخر ليس لديك صلاحيات لعرضها');
             }
@@ -153,36 +151,34 @@ class DeviceController extends Controller
 
     public function edit(string $id)
     {
-        $test = devices::where('id', $id)->first();
+        $test = itams_devices::where('id', $id)->first();
         if (Auth::user()->role == '1') {
-            $par = ['branches' => branches::orderBy('branch' , 'ASC')->get(),
-                    'processors' => processors::orderBy('processor' , 'ASC')->get(),
-                    'memories' => memories::orderBy('kind' , 'ASC')->get(),
-                    'hard_disks' => hard_disks::orderBy('kind' , 'ASC')->get(),
-                    'classes' => classes::orderBy('class' , 'ASC')->get(),
-                    'categories' => categories::where('class_id',$test->class_id)->orderBy('category' , 'ASC')->get(),
-                    'models' => models::orderBy('model' , 'ASC')->get(),
-                    'statuses' => statuses::orderBy('status' , 'ASC')->get(),
-                    'devices' => devices::where('id', $id)->first(),
-                    'processors' => processors::orderBy('processor' , 'ASC')->get(),
-                    'memories' => memories::orderBy('kind' , 'ASC')->orderBy('size' , 'ASC')->get(),
-                    'hard_disks' => hard_disks::orderBy('kind' , 'ASC')->orderBy('size' , 'ASC')->get(),
+            $par = ['branches' => itams_branches::orderBy('branch' , 'ASC')->get(),
+                    'processors' => itams_processors::orderBy('processor' , 'ASC')->get(),
+                    'memories' => itams_memories::orderBy('kind' , 'ASC')->get(),
+                    'classes' => itams_classes::orderBy('class' , 'ASC')->get(),
+                    'categories' => itams_categories::where('class_id',$test->class_id)->orderBy('category' , 'ASC')->get(),
+                    'models' => itams_models::orderBy('model' , 'ASC')->get(),
+                    'statuses' => itams_statuses::orderBy('status' , 'ASC')->get(),
+                    'devices' => itams_devices::where('id', $id)->first(),
+                    'processors' => itams_processors::orderBy('processor' , 'ASC')->get(),
+                    'memories' => itams_memories::orderBy('kind' , 'ASC')->orderBy('size' , 'ASC')->get(),
+                    'hard_disks' => itams_hard_disks::orderBy('kind' , 'ASC')->orderBy('size' , 'ASC')->get(),
                     ];
             return view('device.edit')->with('list', $par);
         } else {
             if ($test->branch_id == Auth::user()->branch_id) {
-                $par = ['branches' => branches::where('id',Auth::user()->branch_id)->get(),
-                        'processors' => processors::orderBy('processor' , 'ASC')->get(),
-                        'memories' => memories::orderBy('kind' , 'ASC')->get(),
-                        'hard_disks' => hard_disks::orderBy('kind' , 'ASC')->get(),
-                        'classes' => classes::orderBy('class' , 'ASC')->get(),
-                        'categories' => categories::where('class_id',$test->class_id)->orderBy('category' , 'ASC')->get(),
-                        'models' => models::orderBy('model' , 'ASC')->get(),
-                        'statuses' => statuses::orderBy('status' , 'ASC')->get(),
-                        'devices' => devices::where('id', $id)->first(),
-                        'processors' => processors::orderBy('processor' , 'ASC')->get(),
-                        'memories' => memories::orderBy('kind' , 'ASC')->orderBy('size' , 'ASC')->get(),
-                        'hard_disks' => hard_disks::orderBy('kind' , 'ASC')->orderBy('size' , 'ASC')->get(),
+                $par = ['branches' => itams_branches::where('id',Auth::user()->branch_id)->get(),
+                        'processors' => itams_processors::orderBy('processor' , 'ASC')->get(),
+                        'memories' => itams_memories::orderBy('kind' , 'ASC')->get(),
+                        'classes' => itams_classes::orderBy('class' , 'ASC')->get(),
+                        'categories' => itams_categories::where('class_id',$test->class_id)->orderBy('category' , 'ASC')->get(),
+                        'models' => itams_models::orderBy('model' , 'ASC')->get(),
+                        'statuses' => itams_statuses::orderBy('status' , 'ASC')->get(),
+                        'devices' => itams_devices::where('id', $id)->first(),
+                        'processors' => itams_processors::orderBy('processor' , 'ASC')->get(),
+                        'memories' => itams_memories::orderBy('kind' , 'ASC')->orderBy('size' , 'ASC')->get(),
+                        'hard_disks' => itams_hard_disks::orderBy('kind' , 'ASC')->orderBy('size' , 'ASC')->get(),
                         ];
                 return view('device.edit')->with('list', $par);
             } else {
@@ -198,10 +194,10 @@ class DeviceController extends Controller
             'class_id' => ['required', 'min_digits:1'],
             'category_id' => ['required', 'min_digits:1'],
             'model_id' => ['required', 'min_digits:1'],
-            'serial_number' => ['required', 'unique:devices,serial_number,' . $id],
+            'serial_number' => ['required', 'unique:itams_devices,serial_number,' . $id],
             'status_id' => ['required', 'min_digits:1'],
         ]);
-        devices::where('id', $id)
+        itams_devices::where('id', $id)
             ->update([
             'branch_id'=>$request -> Input('branch_id'),
             'class_id'=>$request -> Input('class_id'),
@@ -222,9 +218,9 @@ class DeviceController extends Controller
 
     public function destroy(string $id)
     {
-        $dates = dates::where('device_id', $id)->get();
+        $dates = itams_dates::where('device_id', $id)->get();
         if ($dates->isEmpty()) {
-            $devices = devices::find($id);
+            $devices = itams_devices::find($id);
             $devices -> delete();
             return redirect('device') -> with('message', 'تم حذف الجهاز بنجاح');
         } else {
@@ -234,16 +230,17 @@ class DeviceController extends Controller
 
     public function device_employee(Request $request)
     { 
-        $employee = employees::query(); 
+        $employee = itams_employees::query(); 
         if (Auth::user()->role == '0') {$employee->where('branch_id', $request->branch_id);}
-        $par = ['devices' => devices::where('employee_id',$request -> id)->get(),
-                'employees' => employees::where('id',$request -> id)->first(),
+        $par = ['devices' => itams_devices::where('employee_id',$request -> id)->get(),
+                'employees' => itams_employees::where('id',$request -> id)->first(),
                 'employees_list' => $employee -> get(),
                 ];
         return view('device.device')->with('list' , $par);
     }
 
-    public function export_device_employee(Request $request){
+    public function export_device_employee(Request $request)
+    {
         
         return Excel::download(new ExportDeviceEmployee, $request -> full_name .'.xlsx');
     }

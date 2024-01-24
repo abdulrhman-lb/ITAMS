@@ -4,13 +4,13 @@ namespace App\Http\Controllers\const;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\departments;
+use App\Models\itams_departments;
 
 class DepartmentController extends Controller
 {
     public function index()
     {
-        return view('const.department.index')->with('departments', departments::all());
+        return view('const.department.index')->with('departments', itams_departments::all());
     }
 
     public function create()
@@ -21,10 +21,10 @@ class DepartmentController extends Controller
     public function store(Request $request)
     {
         $request -> validate([
-            'department' => ['required', 'string', 'unique:departments'],
-            'department_en' => ['required', 'string', 'unique:departments'],
+            'department' => ['required', 'string', 'unique:itams_departments'],
+            'department_en' => ['required', 'string', 'unique:itams_departments'],
         ]);
-        departments::create([
+        itams_departments::create([
             'department'=>$request -> Input('department'),
             'department_en'=>$request -> Input('department_en'),
         ]);
@@ -37,16 +37,16 @@ class DepartmentController extends Controller
 
     public function edit(string $id)
     {
-        return view('const.department.edit')->with('departments', departments::where('id', $id)->first());
+        return view('const.department.edit')->with('departments', itams_departments::where('id', $id)->first());
     }
 
     public function update(Request $request, string $id)
     {
         $request -> validate([
-            'department' => 'required|string|unique:departments,department,' . $id,
-            'department_en' => 'required|string|unique:departments,department_en,' . $id,
+            'department' => 'required|string|unique:itams_departments,department,' . $id,
+            'department_en' => 'required|string|unique:itams_departments,department_en,' . $id,
         ]);
-        departments::where('id', $id)
+        itams_departments::where('id', $id)
             ->update([
                 'department'=>$request -> Input('department'),
                 'department_en'=>$request -> Input('department_en'),
@@ -56,7 +56,7 @@ class DepartmentController extends Controller
 
     public function destroy(string $id)
     {
-        $departments = departments::findOrFail($id);
+        $departments = itams_departments::findOrFail($id);
         if ($departments->canDelete()) {
             $departments -> delete();
             return redirect('const/department') -> with('message', 'تم حذف القسم بنجاح');

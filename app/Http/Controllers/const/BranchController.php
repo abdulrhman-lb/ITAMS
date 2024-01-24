@@ -5,12 +5,13 @@ namespace App\Http\Controllers\const;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\branches;
+use App\Models\itams_branches;
 
 class BranchController extends Controller
 {
     public function index()
     {
-        return view('const.branch.index')->with('branches', branches::all());
+        return view('const.branch.index')->with('branches', itams_branches::all());
     }
 
     public function create()
@@ -21,10 +22,10 @@ class BranchController extends Controller
     public function store(Request $request)
     {
         $request -> validate([
-            'branch' => ['required', 'string', 'unique:branches'],
-            'branch_en' => ['required', 'string', 'unique:branches'],
+            'branch' => ['required', 'string', 'unique:itams_branches'],
+            'branch_en' => ['required', 'string', 'unique:itams_branches'],
         ]);
-        branches::create([
+        itams_branches::create([
             'branch'=>$request -> Input('branch'),
             'branch_en'=>$request -> Input('branch_en'),
         ]);
@@ -37,16 +38,16 @@ class BranchController extends Controller
 
     public function edit(string $id)
     {
-        return view('const.branch.edit')->with('branches', branches::where('id', $id)->first());
+        return view('const.branch.edit')->with('branches', itams_branches::where('id', $id)->first());
     }
 
     public function update(Request $request, string $id)
     {
         $request -> validate([
-            'branch' => 'required|string|unique:branches,branch,' . $id,
-            'branch_en' => 'required|string|unique:branches,branch_en,' . $id,
+            'branch' => 'required|string|unique:itams_branches,branch,' . $id,
+            'branch_en' => 'required|string|unique:itams_branches,branch_en,' . $id,
         ]);
-        branches::where('id', $id)
+        itams_branches::where('id', $id)
             ->update([
                 'branch'=>$request -> Input('branch'),
                 'branch_en'=>$request -> Input('branch_en'),
@@ -56,7 +57,7 @@ class BranchController extends Controller
 
     public function destroy(string $id)
     {
-        $branches = branches::findOrFail($id);
+        $branches = itams_branches::findOrFail($id);
         if ($branches->canDelete()) {
             $branches -> delete();
             return redirect('const/branch') -> with('message', 'تم حذف الفرع بنجاح');

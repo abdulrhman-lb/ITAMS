@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\dates;
-use App\Models\devices;
-use App\Models\employees;
+use App\Models\itams_dates;
+use App\Models\itams_devices;
+use App\Models\itams_employees;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ExportDates;
@@ -16,10 +16,10 @@ class DatesController extends Controller
 {
     public function index(Request $request)
     {
-        $employee = employees::query(); 
+        $employee = itams_employees::query(); 
         if (Auth::user()->role == '0') {$employee->where('branch_id', $request->branch_id);}
-        $par = ['dates' => Dates::where('device_id',$request -> id)->orderBy('start_date' , 'ASC')->orderBy('id' , 'ASC')->get(),
-                'devices' => devices::where('id',$request -> id)->first(),
+        $par = ['dates' => itams_dates::where('device_id',$request -> id)->orderBy('start_date' , 'ASC')->orderBy('id' , 'ASC')->get(),
+                'devices' => itams_devices::where('id',$request -> id)->first(),
                 'employees' => $employee -> get(),
                 'back' => $request -> back
                 ];
@@ -31,10 +31,10 @@ class DatesController extends Controller
         $request -> validate([
             'employee_id' => ['required', 'min_digits:1'],
         ]);
-        $devices = devices::where('id',$request -> device_id)->first();
-        $employees = employees::where('id',$request -> employee_id)->first();
-        $dates = Dates::where('device_id',$request -> device_id)->where('end_date', null)->orderBy('start_date' , 'desc')->first();
-        $old_employee = $dates -> employee_id;
+        $devices = itams_devices::where('id',$request -> device_id)->first();
+        $employees = itams_employees::where('id',$request -> employee_id)->first();
+        $dates = itams_dates::where('device_id',$request -> device_id)->where('end_date', null)->orderBy('start_date' , 'desc')->first();
+        $old_employee = $employees -> id;
         if (is_null($devices -> employee)) {
             $priev = null;
         } else {
@@ -51,7 +51,7 @@ class DatesController extends Controller
             $dates -> update(['end_date'=> now()]);
         };
         //انشاء سجل استلام جديد للموظف الحالي
-        Dates::create(['start_date'=> now(),
+        itams_dates::create(['start_date'=> now(),
                         'branch_id'=> $employees -> branch_id,
                         'sub_branch_id'=> $employees -> sub_branch_id,
                         'department_id'=> $employees -> department_id,
@@ -77,18 +77,18 @@ class DatesController extends Controller
         $request -> validate([
             'new_employee_id' => ['required', 'min_digits:1'],
         ]);
-        $new_employee = employees::where('id',$request -> new_employee_id)->first();
-        $old_employee = employees::where('id',$request -> old_employee_id)->first();
-        $devices = devices::where('employee_id',$request -> old_employee_id)->get();
+        $new_employee = itams_employees::where('id',$request -> new_employee_id)->first();
+        $old_employee = itams_employees::where('id',$request -> old_employee_id)->first();
+        $devices = itams_devices::where('employee_id',$request -> old_employee_id)->get();
         if (!$devices->isEmpty()) {
             foreach ($devices as $device) {
                 // dd($device);
-                $dates = Dates::where('device_id',$device -> id)->where('end_date', null)->first();
+                $dates = itams_dates::where('device_id',$device -> id)->where('end_date', null)->first();
                 // dd($dates);
                  //تسجيل تاريخ انتاء التسليم للموظف السابق
                 $dates -> update(['end_date'=> now()]);
                 //انشاء سجل استلام جديد للموظف الحالي
-                Dates::create(['start_date'=> now(),
+                itams_dates::create(['start_date'=> now(),
                                 'branch_id'=> $new_employee -> branch_id,
                                 'sub_branch_id'=> $new_employee -> sub_branch_id,
                                 'department_id'=> $new_employee -> department_id,

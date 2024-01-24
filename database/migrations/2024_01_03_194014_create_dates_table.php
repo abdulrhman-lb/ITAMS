@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('dates', function (Blueprint $table) {
+        Schema::create('itams_dates', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('branch_id');
             $table->unsignedBigInteger('sub_branch_id');
@@ -21,11 +21,11 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date')->nullable();
             $table->timestamps();
-            $table->foreign('branch_id')->references('id')->on('branches');
-            $table->foreign('sub_branch_id')->references('id')->on('sub_branches');
-            $table->foreign('department_id')->references('id')->on('departments');
-            $table->foreign('employee_id')->references('id')->on('employees');
-            $table->foreign('device_id')->references('id')->on('devices');
+            $table->foreign('branch_id')->references('id')->on('itams_branches');
+            $table->foreign('sub_branch_id')->references('id')->on('itams_sub_branches');
+            $table->foreign('department_id')->references('id')->on('itams_departments');
+            $table->foreign('employee_id')->references('id')->on('itams_employees');
+            $table->foreign('device_id')->references('id')->on('itams_devices');
         });
     }
 
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('dates');
+        Schema::dropIfExists('itams_dates');
     }
 };

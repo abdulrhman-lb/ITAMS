@@ -4,13 +4,13 @@ namespace App\Http\Controllers\const;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\jop_titles;
+use App\Models\itams_jop_titles;
 
 class jop_titleController extends Controller
 {
     public function index()
     {
-        return view('const.title.index')->with('jop_titles', jop_titles::all());
+        return view('const.title.index')->with('jop_titles', itams_jop_titles::all());
     }
 
     public function create()
@@ -21,9 +21,9 @@ class jop_titleController extends Controller
     public function store(Request $request)
     {
         $request -> validate([
-            'jop_title' => ['required', 'string', 'unique:jop_titles'],
+            'jop_title' => ['required', 'string', 'unique:itams_jop_titles'],
         ]);
-        jop_titles::create([
+        itams_jop_titles::create([
             'jop_title'=>$request -> Input('jop_title'),
         ]);
         return redirect('const/title') -> with('message', 'تم إضافة التوصيف الوظيفي بنجاح');
@@ -35,15 +35,15 @@ class jop_titleController extends Controller
 
     public function edit(string $id)
     {
-        return view('const.title.edit')->with('jop_titles', jop_titles::where('id', $id)->first());
+        return view('const.title.edit')->with('jop_titles', itams_jop_titles::where('id', $id)->first());
     }
 
     public function update(Request $request, string $id)
     {
         $request -> validate([
-            'jop_title' => 'required|string|unique:jop_titles,jop_title,' . $id,
+            'jop_title' => 'required|string|unique:itams_jop_titles,jop_title,' . $id,
         ]);
-        jop_titles::where('id', $id)
+        itams_jop_titles::where('id', $id)
             ->update([
                 'jop_title'=>$request -> Input('jop_title'),
             ]);
@@ -52,7 +52,7 @@ class jop_titleController extends Controller
 
     public function destroy(string $id)
     {
-        $jop_titles = jop_titles::findOrFail($id);
+        $jop_titles = itams_jop_titles::findOrFail($id);
         if ($jop_titles->canDelete()) {
             $jop_titles -> delete();
             return redirect('const/title') -> with('message', 'تم حذف التوصيف الوظيفي بنجاح');
